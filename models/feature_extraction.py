@@ -23,10 +23,16 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Running on", device)
 
 # 5. Embedding generator
-def generate_cls_embeddings(texts):
+def generate_cls_embeddings(texts, batch_size=None):
     """
-    texts: list of values (possibly non-str)
-    returns: np.array of shape (len(texts), 768)
+    Generate CodeBERT CLS token embeddings for a list of texts
+    
+    Args:
+        texts: list of values (possibly non-str)
+        batch_size: optional custom batch size to override global BATCH_SIZE
+        
+    Returns:
+        np.array of shape (len(texts), 768)
     """
     # Lazy load CodeBERT tokenizer and model
     global tokenizer, model
@@ -36,9 +42,16 @@ def generate_cls_embeddings(texts):
         model = AutoModel.from_pretrained(MODEL_NAME)
         model.to(device).eval()
 
+    # Use custom batch size if provided, otherwise use global BATCH_SIZE
+    actual_batch_size = batch_size or BATCH_SIZE
+    
+    # Free CUDA memory before starting
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    
     all_embs = []
-    for i in tqdm(range(0, len(texts), BATCH_SIZE), desc="Embedding"):
-        raw_batch = texts[i : i + BATCH_SIZE]
+    for i in tqdm(range(0, len(texts), actual_batch_size), desc="Embedding"):
+        raw_batch = texts[i : i + actual_batch_size]
         # FORCE every item to str:
         batch = [str(x) for x in raw_batch]
 

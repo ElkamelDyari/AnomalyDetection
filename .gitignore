@@ -1,8 +1,27 @@
 # Virtual environment
 myEnv/
+venv/
+env/
+.env/
+.venv/
 
-# Data folder
+# Data and model files
 data/
+*.npy
+*.h5
+*.pth
+*.pt
+*.pkl
+*.pickle
+*.bin
+*.state
+
+# MLflow and experiment tracking
+mlruns/
+temp_artifacts/
+pipeline_output/
+*_output/
+*_models/
 
 # Python bytecode
 __pycache__/
@@ -16,6 +35,7 @@ build/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb
 
 # IDE files
 .idea/
@@ -23,6 +43,26 @@ build/
 *.swp
 *.swo
 
+# Logs and results
+logs/
+*.log
+*.csv
+*.json
+*.out
+
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Backup files
+*~
+*.bak
+
+# Exclude production deployment files
+.env
+.env.local
+.env.production
+
+# Keep these files even if they match patterns above
+!data/.gitkeep
+!requirements.txt
